@@ -14,6 +14,7 @@ import ProgressBar from './ProgressBar'
 import CurrentTime from './CurrentTime'
 import Duration from './Duration'
 import VolumeBar from './VolumeBar'
+import MidiPlayer from 'web-midi-player';
 
 interface PlayerProps {
   /**
@@ -75,6 +76,8 @@ interface PlayerProps {
   customIcons: CustomIcons
   children?: ReactNode
   style?: CSSProperties
+
+  midiPatchUrl?: string
 }
 
 interface PlayerState {
@@ -137,6 +140,8 @@ class H5AudioPlayer extends Component<PlayerProps, PlayerState> {
 
   downloadProgressAnimationTimer?: number
 
+  midiPlayer?: MidiPlayer
+
   constructor(props: PlayerProps) {
     super(props)
     const { volume } = props
@@ -145,19 +150,61 @@ class H5AudioPlayer extends Component<PlayerProps, PlayerState> {
       isLoopEnabled: this.props.loop,
     }
 
+    const eventLogger = payload => {
+      if (payload.event === 'MIDI_END') {
+        this.clearListenTrack()
+        this.props.onEnded && this.props.onEnded(payload)
+      }
+      if (payload.event === 'MIDI_PLAY') {
+        this.setState({ isPlaying: true })
+        this.setListenTrack()
+        this.props.onPlay && this.props.onPlay(payload)
+      }
+      if (payload.event === 'MIDI_PAUSE') {
+        this.clearListenTrack()
+        if (!this.midiPlayer) return
+        this.setState({ isPlaying: false })
+        this.props.onPause && this.props.onPause(payload)
+      }
+      if (payload.event === 'MIDI_STOP') {
+        this.clearListenTrack()
+        this.props.onEnded && this.props.onEnded(payload)
+      }
+      if (payload.event === 'MIDI_RESUME') {
+        this.clearListenTrack()
+        this.props.onEnded && this.props.onEnded(payload)
+      }
+      if (payload.event === 'MIDI_ERROR') {
+        this.props.onError && this.props.onError(payload)
+      }
+
+    }
+    this.midiPlayer = new MidiPlayer({ eventLogger, patchUrl: props.midiPatchUrl });
+
     this.lastVolume = volume
   }
 
+
   togglePlay = (e: React.SyntheticEvent): void => {
     e.stopPropagation()
-    if (this.audio.paused && this.audio.src) {
-      const audioPromise = this.audio.play()
-      audioPromise.then(null).catch((err) => {
-        const { onPlayError } = this.props
-        onPlayError && onPlayError(new Error(err))
-      })
-    } else if (!this.audio.paused) {
+
+    if (this.audio && this.audio.src.endsWith('.midi') || this.audio.src.endsWith('.mid')) {
       this.audio.pause()
+      if (this.state.isPlaying)
+        this.midiPlayer.pause();
+      else
+        this.midiPlayer.play({ url: this.audio.src });
+    } else {
+      this.midiPlayer.stop();
+      if (this.audio.paused && this.audio.src) {
+        const audioPromise = this.audio.play()
+        audioPromise.then(null).catch((err) => {
+          const { onPlayError } = this.props
+          onPlayError && onPlayError(new Error(err))
+        })
+      } else if (!this.audio.paused) {
+        this.audio.pause()
+      }
     }
   }
 
@@ -296,7 +343,11 @@ class H5AudioPlayer extends Component<PlayerProps, PlayerState> {
       this.clearListenTrack()
       const { autoPlayAfterSrcChange } = this.props
       if (autoPlayAfterSrcChange) {
-        this.audio.play()
+        if (this.audio && this.audio.src.endsWith('.midi') || this.audio.src.endsWith('.mid')) {
+          this.audio.pause()
+        } else {
+          this.audio.play()
+        }
       } else {
         this.setState({
           isPlaying: false,
