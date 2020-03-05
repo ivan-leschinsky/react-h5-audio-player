@@ -17,7 +17,7 @@ import ProgressBar from './ProgressBar';
 import CurrentTime from './CurrentTime';
 import Duration from './Duration';
 import VolumeBar from './VolumeBar';
-import MidiPlayer from 'web-midi-player';
+import MidiPlayer from './web-midi-player';
 
 var H5AudioPlayer = function (_Component) {
   _inheritsLoose(H5AudioPlayer, _Component);
