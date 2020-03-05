@@ -1,6 +1,6 @@
 {
-  "name": "react-h5-audio-player",
-  "version": "2.4.2",
+  "name": "react-h5-audio-player-test",
+  "version": "2.4.3",
   "description": "A React audio player with UI. Written in TypeScript. Mobile compatible. Keyboard friendly",
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -16,9 +16,13 @@
     "storybook": "start-storybook -p 9000",
     "build:storybook": "build-storybook -c .storybook -o react-h5-audio-player-storybook"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/lhz516/react-h5-audio-player.git"
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/ivan-leschinsky/react-h5-audio-player.git",
+    "directory": "packages/react-h5-audio-player-test"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "keywords": [
     "react",
@@ -32,9 +36,9 @@
   "author": "Hanz Luo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lhz516/react-h5-audio-player/issues"
+    "url": "https://github.com/ivan-leschinsky/react-h5-audio-player/issues"
   },
-  "homepage": "https://github.com/lhz516/react-h5-audio-player#readme",
+  "homepage": "https://github.com/ivan-leschinsky/react-h5-audio-player#readme",
   "peerDependencies": {
     "react": "^15.5.0 || ^16.0.0",
     "react-dom": "^15.5.0 || ^16.0.0",
