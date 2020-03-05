@@ -1,5 +1,3 @@
 .npmrc
 node_modules/
-lib/
-es/
 react-h5-audio-player-storybook/

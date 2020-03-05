@@ -1,5 +1,5 @@
 {
-  "name": "react-h5-audio-player-test",
+  "name": "react-h5-audio-player-compiled",
   "version": "2.4.3",
   "description": "A React audio player with UI. Written in TypeScript. Mobile compatible. Keyboard friendly",
   "main": "./lib/index.js",
@@ -18,8 +18,8 @@
   },
   "repository" : {
     "type" : "git",
-    "url": "ssh://git@github.com/ivan-leschinsky/react-h5-audio-player.git",
-    "directory": "packages/react-h5-audio-player-test"
+    "url": "ssh://git@github.com/ivan-leschinsky/react-h5-audio-player-compiled.git",
+    "directory": "packages/react-h5-audio-player-compiled"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
